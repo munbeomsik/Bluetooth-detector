@@ -13,11 +13,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.BluetoothButton.setOnClickListener(){
+        binding.buttonBt.setOnClickListener(){
             val intent = Intent(this, test_Bluetooth::class.java)
             startActivity(intent)
         }
-        binding.OCRbutton.setOnClickListener(){
+        binding.buttonOCR.setOnClickListener(){
             val intent = Intent(this, test_Ocr::class.java)
             startActivity(intent)
         }
