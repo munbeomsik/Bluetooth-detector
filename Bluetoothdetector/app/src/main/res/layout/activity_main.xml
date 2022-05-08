@@ -4,29 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#CDE4EF"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="18dp"
+        android:gravity="center"
+        android:text="Bluetooth Detector"
+        android:textSize="19dp"
+        app:layout_constraintBottom_toTopOf="@+id/view_auto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:layout_width="177dp"
-        android:layout_height="105dp"
-        android:onClick="OCR_Start"
-        android:text="OCR" />
+    <View
+        android:id="@+id/view_auto"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="81dp"
+        android:layout_marginEnd="19dp"
+        android:background="@drawable/layout_round"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="자동탐지"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="@+id/view_auto"
+        app:layout_constraintTop_toTopOf="@+id/view_auto" />
+
+    <Switch
+        android:id="@+id/Auto_Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="22dp"
+        android:showText="false"
+        android:switchMinWidth="60dp"
+        android:thumbTint="#FFFFFF"
+        android:track="@drawable/switch_track_selector"
+        app:layout_constraintEnd_toEndOf="@+id/view_auto"
+        app:layout_constraintTop_toTopOf="@+id/view_auto"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="23dp"
+        android:text="주변 기기"
+        android:textSize="25dp"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toBottomOf="@+id/view_auto" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="19dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/layout_round"
+        app:layout_constraintBottom_toTopOf="@+id/button_OCR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView3" />
 
     <Button
-        android:layout_width="182dp"
-        android:layout_height="107dp"
+        android:id="@+id/button_OCR"
+        android:layout_width="0dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="54dp"
+        android:onClick="OCR_Start"
+        android:text="격리자 등록"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_Bt"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_Bt"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_marginEnd="22dp"
         android:onClick="Bluetooth_Start"
-        android:text="Bluetooth"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="138dp" />
+        android:text="기기 검색"
+        android:textSize="18dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_OCR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_OCR" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
