@@ -16,17 +16,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/OCRbutton"
         android:layout_width="177dp"
         android:layout_height="105dp"
-        android:onClick="OCR_Start"
-        android:text="OCR" />
+        android:text="OCR"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/BluetoothButton"
         android:layout_width="182dp"
         android:layout_height="107dp"
-        android:onClick="Bluetooth_Start"
         android:text="Bluetooth"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="138dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/OCRbutton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
