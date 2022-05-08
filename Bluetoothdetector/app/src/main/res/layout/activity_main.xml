@@ -85,6 +85,12 @@
         app:layout_constraintTop_toTopOf="@+id/textView3" />
 
     <Button
+        android:id="@+id/OCRbutton"
+        android:layout_width="177dp"
+        android:layout_height="105dp"
+        android:text="OCR"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
         android:id="@+id/button_OCR"
         android:layout_width="0dp"
         android:layout_height="62dp"
@@ -99,6 +105,12 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/BluetoothButton"
+        android:layout_width="182dp"
+        android:layout_height="107dp"
+        android:text="Bluetooth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/OCRbutton" />
         android:id="@+id/button_Bt"
         android:layout_width="0dp"
         android:layout_height="63dp"
