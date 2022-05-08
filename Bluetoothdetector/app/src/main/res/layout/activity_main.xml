@@ -15,4 +15,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:layout_width="177dp"
+        android:layout_height="105dp"
+        android:onClick="OCR_Start"
+        android:text="OCR" />
+
+    <Button
+        android:layout_width="182dp"
+        android:layout_height="107dp"
+        android:onClick="Bluetooth_Start"
+        android:text="Bluetooth"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="138dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
