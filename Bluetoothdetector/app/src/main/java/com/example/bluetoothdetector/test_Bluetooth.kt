@@ -29,19 +29,18 @@ class test_Bluetooth : AppCompatActivity() {
         //권한
         val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         val intent: Intent
-
+        intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         if (mBluetoothAdapter.isEnabled) {
             // 블루투스 관련 실행 진행
         } else {
             // 블루투스 활성화 하도록
-            intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(intent, 1)
         }
         //
         val bleOnOffBtn: ToggleButton = binding.bleOnOffBtn
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
-        if(bluetoothAdapter!=null){
+        if(bluetoothAdapter!=null){             //블루투스 on/off
             // Device doesn't support Bluetooth
             if(bluetoothAdapter?.isEnabled==false){
                 bleOnOffBtn.isChecked = true
@@ -56,8 +55,7 @@ class test_Bluetooth : AppCompatActivity() {
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(receiver, filter)
         //페어링된 기기 검색
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        val pairedDevices = bluetoothAdapter.bondedDevices
+        val pairedDevices = mBluetoothAdapter.bondedDevices
 
         binding.searchBtn.setOnClickListener(){
             /*
@@ -74,10 +72,8 @@ class test_Bluetooth : AppCompatActivity() {
          */
             //페어링된 기기 검색
 
-            val bleEnableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(bleEnableIntent, REQUEST_ENABLE_BT)
-
-            bluetoothAdapter.startDiscovery()
+            startActivityForResult(intent, REQUEST_ENABLE_BT)
+            System.out.println(mBluetoothAdapter.startDiscovery())    //검색시작
         }
         //페어링된 기기 검색 끝
 
@@ -119,16 +115,17 @@ class test_Bluetooth : AppCompatActivity() {
     }
     @SuppressLint("MissingPermission")
     fun bluetoothOnOff(){
-        if (bluetoothAdapter == null) {
+        if (bluetoothAdapter == null) {     //블루투스를 지원하는지 확인
             // Device doesn't support Bluetooth
             Log.d("bluetoothAdapter","Device doesn't support Bluetooth")
         }else{
             if (bluetoothAdapter?.isEnabled == false) { // 블루투스 꺼져 있으면 블루투스 활성화
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+                Log.d("bluetoothAdapter","블루투스활성화")
             } else{ // 블루투스 켜져있으면 블루투스 비활성화
                 bluetoothAdapter?.disable()
-                Log.d("bluetoothAdapter","종료")
+                Log.d("bluetoothAdapter","블루투스비활성화")
             }
         }
     }
