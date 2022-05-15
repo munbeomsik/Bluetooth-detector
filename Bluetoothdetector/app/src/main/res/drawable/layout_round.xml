@@ -7,13 +7,13 @@
         android:bottom="2dp">
         <shape android:shape="rectangle">
             <stroke android:width="2dp"
-                android:color="#ffffff"/>
-            <solid android:color="#ffffff"/>
+                android:color="#2B2B2B"/>
+            <solid android:color="#2B2B2B"/>
             <corners
-                android:topLeftRadius="18dp"
-                android:topRightRadius="18dp"
-                android:bottomLeftRadius="18dp"
-                android:bottomRightRadius="18dp"/>
+                android:topLeftRadius="10dp"
+                android:topRightRadius="10dp"
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="10dp"/>
         </shape>
     </item>
 </layer-list>
