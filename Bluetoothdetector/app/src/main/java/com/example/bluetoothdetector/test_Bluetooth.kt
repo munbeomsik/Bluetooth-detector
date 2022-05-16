@@ -3,11 +3,14 @@ package com.example.bluetoothdetector
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.ToggleButton
 import androidx.annotation.Nullable
@@ -20,6 +23,10 @@ class test_Bluetooth : AppCompatActivity() {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var mBinding: ActivityTestBluetoothBinding? = null   //뷰바인딩
     private val binding get() = mBinding!!
+
+    private var mScanning: Boolean = false
+    private var arrayDevices = ArrayList<BluetoothDevice>()
+    private val handler = Handler()
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,8 +46,7 @@ class test_Bluetooth : AppCompatActivity() {
         //
         val bleOnOffBtn: ToggleButton = binding.bleOnOffBtn
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-        if(bluetoothAdapter!=null){             //블루투스 on/off
+        if(bluetoothAdapter!=null){             //블루투스 on/off초기설정
             // Device doesn't support Bluetooth
             if(bluetoothAdapter?.isEnabled==false){
                 bleOnOffBtn.isChecked = true
@@ -48,14 +54,14 @@ class test_Bluetooth : AppCompatActivity() {
                 bleOnOffBtn.isChecked = false
             }
         }
-
         bleOnOffBtn.setOnCheckedChangeListener { _, isChecked ->
             bluetoothOnOff()
         }
+        //페어링된 기기 검색
+
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(receiver, filter)
-        //페어링된 기기 검색
-        val pairedDevices = mBluetoothAdapter.bondedDevices
+        //val pairedDevices = mBluetoothAdapter.bondedDevices
 
         binding.searchBtn.setOnClickListener(){
             /*
@@ -72,13 +78,15 @@ class test_Bluetooth : AppCompatActivity() {
          */
             //페어링된 기기 검색
 
-            startActivityForResult(intent, REQUEST_ENABLE_BT)
             System.out.println(mBluetoothAdapter.startDiscovery())    //검색시작
+            //scanLeDevice(true)
+            System.out.println("디바이스개수" + arrayDevices.size)
         }
         //페어링된 기기 검색 끝
 
 
     }
+    /*
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -87,7 +95,7 @@ class test_Bluetooth : AppCompatActivity() {
             }
         }
     }
-
+*/
     private val receiver = object : BroadcastReceiver() {
 
         @SuppressLint("MissingPermission")
@@ -102,9 +110,15 @@ class test_Bluetooth : AppCompatActivity() {
                     val deviceName = device.name
                     val deviceHardwareAddress = device.address // MAC address
                     System.out.println(deviceName)
+                    if (!arrayDevices.contains(device) && device.name!=null) arrayDevices.add(device)
                 }
             }
+            System.out.println("디바이스개수" + arrayDevices.size)
+            for(i in arrayDevices){
+                println(i.name)
+            }
         }
+
     }
 
     override fun onDestroy() {
@@ -113,6 +127,8 @@ class test_Bluetooth : AppCompatActivity() {
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver)
     }
+
+
     @SuppressLint("MissingPermission")
     fun bluetoothOnOff(){
         if (bluetoothAdapter == null) {     //블루투스를 지원하는지 확인
@@ -126,6 +142,53 @@ class test_Bluetooth : AppCompatActivity() {
             } else{ // 블루투스 켜져있으면 블루투스 비활성화
                 bluetoothAdapter?.disable()
                 Log.d("bluetoothAdapter","블루투스비활성화")
+            }
+        }
+    }
+    //검색
+
+    private val scanCallback = object: ScanCallback() {
+        override fun onScanFailed(errorCode: Int) {
+            super.onScanFailed(errorCode)
+            System.out.println("BLE Scan Failed : " + errorCode)
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onScanResult(callbackType: Int, result: ScanResult?) {
+            result?.let {
+                if (!arrayDevices.contains(it.device)) {arrayDevices.add(it.device)
+                System.out.println("device name "+it.device.name)}
+            }
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onBatchScanResults(results: MutableList<ScanResult>?) {
+            results?.let {
+                for (result in it) {
+                    if (!arrayDevices.contains(result.device)){arrayDevices.add(result.device)
+                    System.out.println("batchdevice name "+result.device.name)}
+                }
+            }
+        }
+    }
+
+    private val SCAN_PERIOD = 10000
+    @SuppressLint("MissingPermission")
+    private fun scanLeDevice(enable: Boolean) {
+        when (enable) {
+            true -> {
+                handler.postDelayed({
+                    mScanning = false
+                    bluetoothAdapter!!.bluetoothLeScanner.stopScan(scanCallback)
+                }, SCAN_PERIOD.toLong())
+                System.out.println("디바이스수 2 : "+arrayDevices.size)
+                mScanning = true
+                arrayDevices.clear()
+                bluetoothAdapter!!.bluetoothLeScanner.startScan(scanCallback)
+            }
+            else -> {
+                mScanning = false
+                bluetoothAdapter!!.bluetoothLeScanner.stopScan(scanCallback)
             }
         }
     }
