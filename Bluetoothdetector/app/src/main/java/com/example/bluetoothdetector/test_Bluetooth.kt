@@ -6,11 +6,16 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.BroadcastReceiver
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageInfo
+import android.hardware.usb.UsbDevice.getDeviceId
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.widget.ToggleButton
 import androidx.annotation.Nullable
@@ -23,7 +28,6 @@ class test_Bluetooth : AppCompatActivity() {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var mBinding: ActivityTestBluetoothBinding? = null   //뷰바인딩
     private val binding get() = mBinding!!
-
     private var mScanning: Boolean = false
     private var arrayDevices = ArrayList<BluetoothDevice>()
     private val handler = Handler()
@@ -83,7 +87,12 @@ class test_Bluetooth : AppCompatActivity() {
             System.out.println("디바이스개수" + arrayDevices.size)
         }
         //페어링된 기기 검색 끝
-
+        System.out.println("안드로이드 id")
+        System.out.println(Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID))
+        System.out.println(mBluetoothAdapter.name)   //찾았다
+        mBluetoothAdapter.setName("mydevice")
+        System.out.println(mBluetoothAdapter.name)
+        System.out.println(BluetoothAdapter.EXTRA_LOCAL_NAME)
 
     }
     /*
