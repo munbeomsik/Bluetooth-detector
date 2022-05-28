@@ -41,6 +41,8 @@ class test_Bluetooth : AppCompatActivity() {
         }
         var found_filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(receiver, found_filter)
+        found_filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+        registerReceiver(receiver, found_filter)
         var state_filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         registerReceiver(BlueCheck, state_filter)
 
@@ -99,6 +101,7 @@ class test_Bluetooth : AppCompatActivity() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
             val action: String = intent.action.toString()
+            System.out.println("현재 상태"+action)
             when(action) {
                 BluetoothDevice.ACTION_FOUND -> {
                     // Discovery has found a device. Get the BluetoothDevice
