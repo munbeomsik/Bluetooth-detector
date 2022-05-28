@@ -1,6 +1,5 @@
 package com.example.bluetoothdetector
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -8,19 +7,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.example.bluetoothdetector.databinding.ActivityTestBluetoothBinding
-import kotlinx.android.synthetic.main.activity_test_bluetooth.*
 
 
 class test_Bluetooth : AppCompatActivity() {
     private val REQUEST_ENABLE_BT=1
+    private val REQUEST_DISCOVER_CODE =100
     private var mBluetoothAdapter: BluetoothAdapter? = null
     private var mBinding: ActivityTestBluetoothBinding? = null   //뷰바인딩
     private val binding get() = mBinding!!
@@ -34,6 +31,7 @@ class test_Bluetooth : AppCompatActivity() {
         mBinding = ActivityTestBluetoothBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //권한
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (mBluetoothAdapter==null){
             System.out.println("블루투스가 사용불가합니다.")
@@ -45,6 +43,9 @@ class test_Bluetooth : AppCompatActivity() {
         registerReceiver(receiver, found_filter)
         var state_filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         registerReceiver(BlueCheck, state_filter)
+        var name_filter = IntentFilter(BluetoothAdapter.ACTION_LOCAL_NAME_CHANGED)
+        registerReceiver(name_change, name_filter)
+
 
         active_bluetooth()      //블루투스 활성화
 
@@ -67,17 +68,25 @@ class test_Bluetooth : AppCompatActivity() {
 
         }
         binding.nexttest.setOnClickListener(){
-            val intent = Intent(this, test_Bluetooth2::class.java)
-            startActivity(intent)
+//            val intent = Intent(this, test_Bluetooth2::class.java)
+//            startActivity(intent)
+            search_allow(3600)
         }
         binding.getname.setOnClickListener(){
-            Device_getname(mBluetoothAdapter!!)
+            System.out.println(Device_getname(mBluetoothAdapter!!))
         }
         binding.setname.setOnClickListener(){
             Device_setname(mBluetoothAdapter!!,"jeahunkim")
         }
     }
-
+    @SuppressLint("MissingPermission")
+    fun search_allow(time:Int){     //검색허용
+        val discoverableIntent: Intent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
+            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0)
+        }
+        startActivity(discoverableIntent)
+    }
+    @SuppressLint("MissingPermission")
     fun check_bluetooth(): Boolean? {   //블루투스on/off상태 체크
 
         System.out.println(mBluetoothAdapter?.isEnabled)
@@ -87,10 +96,11 @@ class test_Bluetooth : AppCompatActivity() {
     fun active_bluetooth(){ //블루투스활성화
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+        //mBluetoothAdapter!!.enable()
     }
     @SuppressLint("MissingPermission")  //블루투스명 가져오기
-    fun Device_getname(mBluetoothAdapter: BluetoothAdapter){
-        System.out.println(mBluetoothAdapter.name)
+    fun Device_getname(mBluetoothAdapter: BluetoothAdapter): String {
+        return mBluetoothAdapter.name.toString()
     }
     @SuppressLint("MissingPermission")  //블루투스명 설정
     fun Device_setname(mBluetoothAdapter: BluetoothAdapter, name :String){
@@ -104,13 +114,10 @@ class test_Bluetooth : AppCompatActivity() {
             System.out.println("현재 상태"+action)
             when(action) {
                 BluetoothDevice.ACTION_FOUND -> {
-                    // Discovery has found a device. Get the BluetoothDevice
-                    // object and its info from the Intent.
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     if (device!=null){
                         val deviceName = device.name
-                        val deviceHardwareAddress = device.address // MAC address
                         System.out.println(deviceName)
                         if (!arrayDevices.contains(device) && device.name!=null) {
                             arrayDevices.add(device)
@@ -140,7 +147,17 @@ class test_Bluetooth : AppCompatActivity() {
 
         }
     }
-
+    private val name_change = object : BroadcastReceiver() {  //이름변경 체크     완료
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            System.out.print("이름바뀜 : ")
+            val name=Device_getname(mBluetoothAdapter!!)
+            if (name=="jeahun"){
+                System.out.println("이름변경시작")
+                Device_setname(mBluetoothAdapter!!,"jaehuntooth")
+            }
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         // Don't forget to unregister the ACTION_FOUND receiver.
