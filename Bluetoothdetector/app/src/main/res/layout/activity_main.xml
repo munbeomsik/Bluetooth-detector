@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/bluetooth_detector"
+        android:textColor="#FFFFFF"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@+id/view_auto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_auto"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="51dp"
+        android:background="@drawable/layout_round"
+        app:layout_constraintBottom_toBottomOf="@+id/Background_View"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:text="@string/자동탐지"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/view_auto"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Switch
+        android:id="@+id/Auto_Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="15dp"
+        android:showText="false"
+        android:switchMinWidth="60dp"
+        android:thumbTint="#FFFFFF"
+        android:track="@drawable/switch_track_selector"
+        app:layout_constraintEnd_toEndOf="@+id/view_auto"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <View
+        android:id="@+id/Background_View"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="43dp"
+        android:background="@drawable/layout_round"
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Auto_Switch" />
+
+    <TextView
+        android:id="@+id/Background_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:text="@string/백그라운드동작"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/Background_View"
+        app:layout_constraintTop_toTopOf="@+id/Background_View" />
+
+    <Switch
+        android:id="@+id/Background_Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:showText="false"
+        android:switchMinWidth="60dp"
+        android:thumbTint="#FFFFFF"
+        android:track="@drawable/switch_track_selector"
+        app:layout_constraintBottom_toBottomOf="@+id/Background_View"
+        app:layout_constraintEnd_toEndOf="@+id/Background_View"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:layout_marginBottom="2dp"
+        android:text="@string/주변기기"
+        android:textColor="#787878"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/ScrollView"
+        app:layout_constraintStart_toStartOf="@+id/ScrollView" />
+
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="17dp"
+        android:background="@drawable/layout_round"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/Result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:text="Sample_01"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:text="Sample_02"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_OCR"
+        android:layout_width="0dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="17dp"
+        android:text="@string/격리자등록"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_Bt"
+        app:layout_constraintEnd_toStartOf="@+id/button_Bt"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_Bt"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="34dp"
+        android:text="@string/기기검색"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_OCR" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

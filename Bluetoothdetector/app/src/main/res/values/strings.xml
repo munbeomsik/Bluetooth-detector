@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Bluetoothdetector</string>
+    <string name="bluetooth_detector">Bluetooth Detector</string>
+    <string name="자동탐지">자동탐지</string>
+    <string name="주변기기">주변 기기</string>
+    <string name="격리자등록">격리자 등록</string>
+    <string name="기기검색">기기 검색</string>
+    <string name="백그라운드동작">백그라운드 동작</string>
+</resources>
