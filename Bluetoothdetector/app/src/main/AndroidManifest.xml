@@ -19,6 +19,9 @@
             android:name=".test_Bluetooth"
             android:exported="false" />
         <activity
+            android:name=".TestChangeName"
+            android:exported="true"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
