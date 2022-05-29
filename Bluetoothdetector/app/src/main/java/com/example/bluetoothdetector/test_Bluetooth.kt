@@ -73,10 +73,11 @@ class test_Bluetooth : AppCompatActivity() {
             search_allow(3600)
         }
         binding.getname.setOnClickListener(){
-            System.out.println(Device_getname(mBluetoothAdapter!!))
+            System.out.println("현재 블루투스 기기명 : "+Device_getname(mBluetoothAdapter!!))
         }
         binding.setname.setOnClickListener(){
-            Device_setname(mBluetoothAdapter!!,"jeahunkim")
+            val devicename=texttoString("20200305")
+            Device_setname(mBluetoothAdapter!!,devicename)
         }
     }
     @SuppressLint("MissingPermission")
@@ -118,20 +119,18 @@ class test_Bluetooth : AppCompatActivity() {
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     if (device!=null){
                         val deviceName = device.name
-                        System.out.println(deviceName)
+                        //System.out.println(deviceName)
                         if (!arrayDevices.contains(device) && device.name!=null) {
                             arrayDevices.add(device)
-                            System.out.println("arraydevice : "+ device.name)
                         }
                     }
-                    else{
-                        System.out.println("arraydevice : null")
+                }
+                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                    System.out.println("디바이스개수" + arrayDevices.size)
+                    for(i in arrayDevices){
+                        println(i.name)
                     }
                 }
-            }
-            System.out.println("디바이스개수" + arrayDevices.size)
-            for(i in arrayDevices){
-                println(i.name)
             }
         }
     }
@@ -152,9 +151,10 @@ class test_Bluetooth : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             System.out.print("이름바뀜 : ")
             val name=Device_getname(mBluetoothAdapter!!)
-            if (name=="jeahun"){
+            if (name=="jaehun"){
                 System.out.println("이름변경시작")
-                Device_setname(mBluetoothAdapter!!,"jaehuntooth")
+                val devicename=texttoString("20200305")
+                Device_setname(mBluetoothAdapter!!,devicename)
             }
         }
     }
@@ -177,6 +177,11 @@ class test_Bluetooth : AppCompatActivity() {
         }
     }
     //검색
-
+    fun texttoString(S: String): String {       //기기명 격리자로 암호화
+        val result: String?
+        val token = S.chunked(1)
+        result = "@qn" + token[5] + "ut" + token[2] + "ai" + token[6] + "&%" + token[7] + token[1] + "rn" + token[2] +"ae"
+        return result
+    }
 
 }
