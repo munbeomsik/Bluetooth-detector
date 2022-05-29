@@ -11,15 +11,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         mBinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setContentView(R.layout.activity_main)
         binding.buttonBt.setOnClickListener(){
             val intent = Intent(this, test_Bluetooth::class.java)
             startActivity(intent)
         }
         binding.buttonOCR.setOnClickListener(){
             val intent = Intent(this, test_Ocr::class.java)
+            startActivity(intent)
+        }
+        binding.testRead.setOnClickListener(){
+            val intent = Intent(this, TestChangeName::class.java)
             startActivity(intent)
         }
     }
