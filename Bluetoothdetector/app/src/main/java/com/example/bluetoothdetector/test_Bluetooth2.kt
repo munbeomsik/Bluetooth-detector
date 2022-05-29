@@ -24,6 +24,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.*
+
 class test_Bluetooth2 : AppCompatActivity() {
     private val REQUEST_ENABLE_BT=1
     private val REQUEST_ALL_PERMISSION= 2
@@ -38,109 +40,7 @@ class test_Bluetooth2 : AppCompatActivity() {
     private val handler = Handler()
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var recyclerViewAdapter : RecyclerViewAdapter
-    private val mLeScanCallback = @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    object : ScanCallback() {
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            Log.d("scanCallback", "BLE Scan Failed : " + errorCode)
-        }
 
-
-        override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-            super.onBatchScanResults(results)
-            results?.let{
-                // results is not null
-                for (result in it){
-                    if (ActivityCompat.checkSelfPermission(
-                            applicationContext,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        return
-                    }
-                    if (!devicesArr.contains(result.device) && result.device.name!=null) {
-                        devicesArr.add(result.device)
-                        System.out.println("resutl device : "+result.device)
-                    }
-                    else{
-                        System.out.println("batchresult 왜 널이냐")
-                    }
-                }
-
-            }
-        }
-
-
-        override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            super.onScanResult(callbackType, result)
-            result?.let {
-                // result is not null
-                if (ActivityCompat.checkSelfPermission(
-                        applicationContext,
-                        Manifest.permission.BLUETOOTH_CONNECT
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    return
-                }
-                if (!devicesArr.contains(it.device) && it.device.name!=null) {
-                    System.out.println("it device : "+ it.device)
-                    devicesArr.add(it.device)
-                }else{
-                    System.out.println("Scanresult 왜 널이냐")
-                }
-                recyclerViewAdapter.notifyDataSetChanged()
-            }
-        }
-
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun scanDevice(state:Boolean) = if(state){
-        handler.postDelayed({
-            scanning = false
-            bluetoothAdapter?.bluetoothLeScanner?.stopScan(mLeScanCallback)
-        }, SCAN_PERIOD)
-        scanning = true
-        devicesArr.clear()
-        bluetoothAdapter?.bluetoothLeScanner?.startScan(mLeScanCallback)
-        System.out.println("저장됐나"+ devicesArr.size )
-    }else{
-        scanning = false
-        bluetoothAdapter?.bluetoothLeScanner?.stopScan(mLeScanCallback)
-    }
-
-    private fun hasPermissions(context: Context?, permissions: Array<String>): Boolean {        //기기권한체크 사용0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (permission in permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-    // Permission check         없어도 되는듯한데 잘 모르겠다
-    /*override fun onRequestPermissionsResult(        //기기권한체크 사용0
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_ALL_PERMISSION -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permissions granted!", Toast.LENGTH_SHORT).show()
-                    System.out.println("권한허용")
-                } else {
-                    requestPermissions(permissions, REQUEST_ALL_PERMISSION)
-                    Toast.makeText(this, "Permissions must be granted", Toast.LENGTH_SHORT).show()
-                    System.out.println("권한허용해주세요")
-                }
-            }
-        }
-    }*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_bluetooth2)
@@ -165,43 +65,54 @@ class test_Bluetooth2 : AppCompatActivity() {
         }
 
         bleOnOffBtn.setOnCheckedChangeListener { _, isChecked ->
-            bluetoothOnOff()
-            scanBtn.visibility = if (scanBtn.visibility == View.VISIBLE){ View.INVISIBLE } else{ View.VISIBLE }
+            System.out.println(filesDir.absoluteFile)
+            var s=readtextfile(filesDir.absolutePath+"/datafile")
+            System.out.println("기존 기기명 : "+s)
+
         }
 
         scanBtn.setOnClickListener { v:View? -> // Scan Button Onclick
-            if (!hasPermissions(this, PERMISSIONS)) {           //기기권한체크 사용0
-                requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
-            }
-            scanDevice(true)
+//            if (!hasPermissions(this, PERMISSIONS)) {           //기기권한체크 사용0
+//                requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
+//            }
+            writetextfile(filesDir.absolutePath,"datafile","jaehun")
         }
     }
-    fun bluetoothOnOff(){
-        if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-            Log.d("bluetoothAdapter","Device doesn't support Bluetooth")
-        }else{
-            if (bluetoothAdapter?.isEnabled == false) { // 블루투스 꺼져 있으면 블루투스 활성화
-                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.BLUETOOTH_CONNECT
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return
+    fun hasPermissions(context: Context?, permissions: Array<String>): Boolean {        //기기권한체크 사용0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                    return false
                 }
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-            } else{ // 블루투스 켜져있으면 블루투스 비활성화
-                bluetoothAdapter?.disable()
             }
         }
+        return true
+    }
+    fun readtextfile(fullpath:String) : String{
+        val file=File(fullpath)
+        if(!file.exists()){
+            return ""
+        }
+        val reader = FileReader(file)
+        val buffer = BufferedReader(reader)
+        var temp = ""
+        temp=buffer.readLine()
+        if(temp==null)
+            return ""
+        buffer.close()
+        return temp
+    }
+    fun writetextfile(directory: String, filename: String, content: String){
+        val dir = File(directory)
+        if(!dir.exists()){
+            dir.mkdirs()
+        }
+        val writer= FileWriter(directory+"/"+filename)
+        val buffer=BufferedWriter(writer)
+        buffer.write(content)
+        System.out.println("기존 기기명 저장")
+        buffer.close()
     }
     class RecyclerViewAdapter(private val myDataset: ArrayList<BluetoothDevice>) :
         RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
@@ -228,8 +139,4 @@ class test_Bluetooth2 : AppCompatActivity() {
 
         override fun getItemCount() = myDataset.size
     }
-}
-
-private fun Handler.postDelayed(function: () -> Unit?, scanPeriod: Int) {
-
 }

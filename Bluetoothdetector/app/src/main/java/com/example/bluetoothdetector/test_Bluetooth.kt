@@ -68,9 +68,9 @@ class test_Bluetooth : AppCompatActivity() {
 
         }
         binding.nexttest.setOnClickListener(){
-//            val intent = Intent(this, test_Bluetooth2::class.java)
-//            startActivity(intent)
-            search_allow(3600)
+            val intent = Intent(this, test_Bluetooth2::class.java)
+            startActivity(intent)
+            //search_allow(3600)
         }
         binding.getname.setOnClickListener(){
             System.out.println("현재 블루투스 기기명 : "+Device_getname(mBluetoothAdapter!!))
