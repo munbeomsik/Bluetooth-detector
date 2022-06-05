@@ -39,6 +39,7 @@ class test_Ocr : AppCompatActivity() {
             System.out.println("블루투스가 사용불가합니다.")
             onDestroy()
         }
+        active_bluetooth()
         OCRTextView = findViewById(R.id.OCRTextView)
         openGallery_button.setOnClickListener{ openGallery() }
     }
@@ -56,12 +57,14 @@ class test_Ocr : AppCompatActivity() {
         mTess!!.setImage(image)
         OCRresult = mTess!!.utF8Text
         OCRresult = OCRresult.replace("[^0-9]".toRegex(), "")
-        OCRTextView!!.text = "\n\n---------------------------------------------------------------------------------------------\n" + "   추출 결과\n"+ "---------------------------------------------------------------------------------------------\n\n   " + OCRresult
+        OCRTextView!!.text = "\n\n------------------------------------------------------------------------------------------\n" + "   추출 결과\n"+ "------------------------------------------------------------------------------------------\n\n   " + OCRresult
         writetextfile(filesDir.absolutePath,"Ocrdatafile",OCRresult)
         writetextfile(filesDir.absolutePath, "name", "asdasd")
+        Device_setname(texttoString(readtextfile(filesDir.absolutePath + "/Ocrdatafile")))
+        System.out.println(Device_getname())
         var dialog = AlertDialog.Builder(this)
         dialog.setTitle("알림")
-        dialog.setMessage("격리자등록 및 암호화가 완료되었습니다.")
+        dialog.setMessage("격리자등록 및 암호화가 완료되었습니다.\n" + readtextfile(filesDir.absolutePath +"/Ocrdatafile") + "일 0시 이후 격리가 해제됩니다." )
 
         var dialog_listener = object: DialogInterface.OnClickListener{
             override fun onClick(dialog: DialogInterface?, which: Int) {
@@ -86,9 +89,16 @@ class test_Ocr : AppCompatActivity() {
         return result
     }
 
+    fun active_bluetooth(){ //블루투스활성화
+        mBluetoothAdapter!!.enable()
+    }
     @SuppressLint("MissingPermission")
     fun Device_getname(): String {
         return mBluetoothAdapter!!.name.toString()
+    }
+    @SuppressLint("MissingPermission")
+    fun Device_setname(name :String){
+        mBluetoothAdapter!!.setName(name)
     }
 
     fun writetextfile(directory: String, filename: String, content: String){
@@ -182,6 +192,7 @@ class test_Ocr : AppCompatActivity() {
         var ch = h // crop height
         if (w > width) cw = width
         if (h > height) ch = height
+        System.out.println(""+cw+" "+ch)
         return Bitmap.createBitmap(src,  1010, 650, cw, ch)
     }
 
