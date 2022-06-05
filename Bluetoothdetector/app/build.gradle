@@ -35,6 +35,9 @@ android {
 }
 
 dependencies {
+    def work_version = "1.0.1"
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    implementation "android.arch.work:work-runtime-ktx:$work_version"
     implementation 'com.rmtheis:tess-two:9.1.0'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
