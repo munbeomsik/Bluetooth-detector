@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 
@@ -56,9 +55,9 @@ class TestChangeName : AppCompatActivity() {
 
         val testtext = "20200305"
         val result1 = texttoString(testtext)//암호화 함수
-        if(IsCorrect(result1) == 1){//암호화 양식과 일치하면 1리턴 아니면 0리턴
-            Log.d("test log","격리자가 식별됨")
+
+        if(IsCorrect(result1) == 1){
+            Notify()
         }
-        Notify()
     }
 }
