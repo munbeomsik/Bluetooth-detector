@@ -7,4 +7,4 @@
  허영진 https://github.com/HeoYoungJin98 <br>
 
 ## Preview
- <img width="300" alt="KakaoTalk_Photo_2022-06-05-21-16-01" src="https://user-images.githubusercontent.com/80889483/172053005-90171fab-73c9-4c96-a589-98fbcd6009ea.png">
+ <img width="250" alt="KakaoTalk_Photo_2022-06-05-21-16-01" src="https://user-images.githubusercontent.com/80889483/172053005-90171fab-73c9-4c96-a589-98fbcd6009ea.png">
