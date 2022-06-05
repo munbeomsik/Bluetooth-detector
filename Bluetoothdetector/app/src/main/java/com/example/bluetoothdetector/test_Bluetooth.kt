@@ -16,7 +16,9 @@ import android.util.Log
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.work.*
 import com.example.bluetoothdetector.databinding.ActivityTestBluetoothBinding
+import com.example.bluetoothdetector.work.bluetooth_worker
 
 class test_Bluetooth : AppCompatActivity() {
     private val REQUEST_ENABLE_BT=1
@@ -50,7 +52,6 @@ class test_Bluetooth : AppCompatActivity() {
 
 
         active_bluetooth()      //블루투스 활성화
-
         val bleOnOffBtn: ToggleButton = binding.bleOnOffBtn //블루투스 on/off초기설정
         // Device doesn't support Bluetooth
         if(check_bluetooth()==false){
@@ -72,7 +73,9 @@ class test_Bluetooth : AppCompatActivity() {
         binding.nexttest.setOnClickListener(){
             val intent = Intent(this, test_Bluetooth2::class.java)
             startActivity(intent)
-            //search_allow(3600)
+            //search_allow(3600)        //검색허용
+
+
         }
         binding.getname.setOnClickListener(){
             System.out.println("현재 블루투스 기기명 : "+Device_getname())
