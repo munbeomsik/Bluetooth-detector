@@ -5,6 +5,3 @@
  문범식 https://github.com/munbeomsik <br>
  김재훈 https://github.com/rlawogns <br>
  허영진 https://github.com/HeoYoungJin98 <br>
-
-##Language
- <img src="https://img.sheilds.io/badge/Kotlin-#7F52FF?style=flat-square&logo=Kotlin&logoColor=white"/></a>&nbsp
