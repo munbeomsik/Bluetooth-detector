@@ -14,68 +14,61 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="203dp"
-            android:layout_height="177dp"
+            android:layout_width="204dp"
+            android:layout_height="match_parent"
             tools:ignore="MissingConstraints"
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="203dp"
-            android:layout_height="177dp"
+            android:layout_width="208dp"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="-1dp"
+            android:layout_marginEnd="1dp"
             tools:ignore="MissingConstraints"
             tools:srcCompat="@tools:sample/avatars" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_below="@id/ImageContainer"
-        android:clickable="true"
+    <Button
+        android:id="@+id/OCRBUtton"
+        android:layout_width="180dp"
+        android:layout_height="73dp"
+        android:layout_alignParentEnd="true"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="33dp"
         android:onClick="processImage"
-        android:background="#166e78"
-        android:id="@+id/OCRButtonContainer"
-        tools:ignore="OnClick">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RUN OCR"
-            android:textSize= "18dp"
-            android:textColor="#ffffff"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:clickable="true"
-            android:onClick="processImage"/>
-
-    </RelativeLayout>
+        android:text="통지서 격리날짜 추출" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/OCRButtonContainer"
         android:padding="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="여기에 결과 출력"
-            android:id="@+id/OCRTextView"
-            android:textSize="15dp"
-            android:textColor="#169cdf"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:background="#fff"
-            />
     </RelativeLayout>
-
     <Button
         android:id="@+id/openGallery_button"
-        android:layout_width="398dp"
+        android:layout_width="180dp"
+        android:layout_height="73dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="33dp"
+        android:layout_toStartOf="@+id/OCRBUtton"
+        android:text="격리통지서 선택" />
+
+    <TextView
+        android:id="@+id/OCRTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_above="@+id/openGallery_button"
+        android:layout_marginBottom="274dp"
+        android:background="#fff"
+        android:text="  격리통지서 선택 버튼을 클릭하여 통지서를 첨부 시\n  좌측에 첨부하신 통지서, 우측에 격리기간이 표시됩니다."
+        android:textColor="#169cdf"
+        android:textSize="15dp" />
 
 
 </RelativeLayout>

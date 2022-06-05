@@ -1,6 +1,10 @@
 package com.example.bluetoothdetector
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -25,10 +29,16 @@ class test_Ocr : AppCompatActivity() {
     var datapath = "" //언어데이터가 있는 경로
     var OCRTextView // OCR 결과뷰
             : TextView? = null
+    private var mBluetoothAdapter: BluetoothAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_ocr)
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        if (mBluetoothAdapter==null){
+            System.out.println("블루투스가 사용불가합니다.")
+            onDestroy()
+        }
         OCRTextView = findViewById(R.id.OCRTextView)
         openGallery_button.setOnClickListener{ openGallery() }
     }
@@ -46,7 +56,65 @@ class test_Ocr : AppCompatActivity() {
         mTess!!.setImage(image)
         OCRresult = mTess!!.utF8Text
         OCRresult = OCRresult.replace("[^0-9]".toRegex(), "")
-        OCRTextView!!.text = OCRresult
+        OCRTextView!!.text = "\n\n---------------------------------------------------------------------------------------------\n" + "   추출 결과\n"+ "---------------------------------------------------------------------------------------------\n\n   " + OCRresult
+        writetextfile(filesDir.absolutePath,"Ocrdatafile",OCRresult)
+        writetextfile(filesDir.absolutePath, "name", "asdasd")
+        var dialog = AlertDialog.Builder(this)
+        dialog.setTitle("알림")
+        dialog.setMessage("격리자등록 및 암호화가 완료되었습니다.")
+
+        var dialog_listener = object: DialogInterface.OnClickListener{
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                when(which){
+                    DialogInterface.BUTTON_POSITIVE ->
+                        finish()
+                }
+            }
+        }
+        dialog.setPositiveButton("YES",dialog_listener)
+        dialog.show()
+    }
+    fun toast_p() {
+        val intent = Intent(this,MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun texttoString(S: String): String {
+        val result: String?
+        val token = S.chunked(1)
+        result = "@qn" + token[5] + "ut" + token[2] + "ai" + token[6] + "&%" + token[7] + token[1] + "rn" + token[2] +"ae"
+        return result
+    }
+
+    @SuppressLint("MissingPermission")
+    fun Device_getname(): String {
+        return mBluetoothAdapter!!.name.toString()
+    }
+
+    fun writetextfile(directory: String, filename: String, content: String){
+        val dir = File(directory)
+        if(!dir.exists()){
+            dir.mkdirs()
+        }
+        val writer= FileWriter(directory+"/"+filename)
+        val buffer=BufferedWriter(writer)
+        buffer.write(content)
+        System.out.println("격리 기간 추출"+ filesDir.absolutePath)
+        buffer.close()
+    }
+    fun readtextfile(fullpath:String) : String{
+        val file=File(fullpath)
+        if(!file.exists()){
+            return ""
+        }
+        val reader = FileReader(file)
+        val buffer = BufferedReader(reader)
+        var temp = ""
+        temp=buffer.readLine()
+        if(temp==null)
+            return ""
+        buffer.close()
+        return temp
     }
 
     /***
