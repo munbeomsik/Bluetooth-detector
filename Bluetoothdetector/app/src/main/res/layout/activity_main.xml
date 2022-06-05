@@ -4,21 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#000000"
     tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/testRead"
-        android:layout_width="500px"
-        android:layout_height="300px"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="161dp"
-        android:layout_marginEnd="101dp"
-        android:layout_marginBottom="161dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_OCR"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/button_OCR"
-        app:layout_constraintTop_toTopOf="@+id/ScrollView" />
 
     <TextView
         android:id="@+id/textView"
@@ -172,27 +159,31 @@
 
     </ScrollView>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_OCR"
         android:layout_width="0dp"
-        android:layout_height="62dp"
+        android:layout_height="55dp"
         android:layout_marginStart="19dp"
-        android:layout_marginEnd="17dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/button_radius"
         android:text="@string/격리자등록"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button_Bt"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_Bt"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_Bt"
         android:layout_width="0dp"
-        android:layout_height="63dp"
-        android:layout_marginEnd="22dp"
-        android:layout_marginBottom="32dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="19dp"
+        android:background="@drawable/button_radius"
         android:text="@string/기기검색"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_OCR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_OCR" />
 
