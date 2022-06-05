@@ -3,5 +3,5 @@
  
 ## Member
  문범식 https://github.com/munbeomsik <br>
- 김재훈 <br>
+ 김재훈 https://github.com/rlawogns <br>
  허영진 https://github.com/HeoYoungJin98 <br>
