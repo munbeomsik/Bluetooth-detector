@@ -157,9 +157,7 @@ class test_Bluetooth : AppCompatActivity() {
                     active_bluetooth()
                     Log.d("bluetoothAdapter","블루투스활성화")
                 }
-
             }
-
         }
     }
 

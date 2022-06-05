@@ -25,21 +25,20 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = mBinding!!
     private var mBluetoothAdapter: BluetoothAdapter? = null
     private var arrayDevices = ArrayList<BluetoothDevice>()
-
+    var result="not complete"
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mBinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val blue_WorkRequest: WorkRequest =
             PeriodicWorkRequestBuilder<bluetooth_worker>(15,TimeUnit.MINUTES).build()
         WorkManager.getInstance()?.enqueue(blue_WorkRequest)
         //WorkManager.getInstance()?.cancelAllWork()
         System.out.println(filesDir.absolutePath)
 
-        binding.buttonBt.setOnClickListener(){
+        binding.buttonBt.setOnClickListener(){          //격리자 탐색
 //            val intent = Intent(this, test_Bluetooth::class.java)
 //            startActivity(intent)
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -62,11 +61,25 @@ class MainActivity : AppCompatActivity() {
         }
         binding.buttonOCR.setOnClickListener(){
             val intent = Intent(this, test_Ocr::class.java)
-            startActivity(intent)
+            //startActivity(intent)
+            startActivityForResult(intent,100)
         }
 
     }
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {   //격리등록완료
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            result = data?.getStringExtra("result")!!
+            if (result=="complete"){
+                System.out.println("asdasdasd")
+//                var state_filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+//                registerReceiver(BlueCheck, state_filter)
+//                var name_filter = IntentFilter(BluetoothAdapter.ACTION_LOCAL_NAME_CHANGED)
+//                registerReceiver(name_change, name_filter)
+                search_allow(3600)
+            }
+        }
+    }
     private val receiver = object : BroadcastReceiver() {   //검색
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
@@ -99,11 +112,41 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private val BlueCheck = object : BroadcastReceiver() {  //블루투스 변경체크     완료
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            val state  = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,-1)
+            System.out.println("블루투스변경감지")
+            if (state == BluetoothAdapter.STATE_OFF) { // 블루투스 꺼져 있으면 블루투스 활성화
+                active_bluetooth()
+                Log.d("bluetoothAdapter","블루투스활성화")
+            }
+        }
+    }
 
+    private val name_change = object : BroadcastReceiver() {  //이름변경 체크     완료
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            System.out.print("이름바뀜 : ")
+            val name=Device_getname()
+            if (name=="jaehun"){
+                System.out.println("이름변경시작")
+                val devicename=texttoString("20200305")
+                Device_setname(devicename)
+            }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(receiver)
+    }
+    @SuppressLint("MissingPermission")
+    fun search_allow(time:Int){     //검색허용
+        val discoverableIntent: Intent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
+            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0)
+        }
+        startActivity(discoverableIntent)
     }
     @SuppressLint("MissingPermission")
     fun active_bluetooth(){ //블루투스활성화
