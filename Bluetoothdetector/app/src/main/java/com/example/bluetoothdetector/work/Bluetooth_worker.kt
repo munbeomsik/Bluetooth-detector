@@ -25,9 +25,7 @@ class bluetooth_worker(appContext: Context, workerParams: WorkerParameters):
         val currentdate=SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
         System.out.println("현재시간 "+currentdate)
         val reads=readtextfile("/data/data/com.example.bluetoothdetector/files/Ocrdatafile") //날짜읽기
-        if (reads!="" && currentdate==reads) {
-            System.out.println("격리해제")
-            System.out.println(reads)
+        if (reads!="-1" && "20220703".toInt()>=reads.toInt()) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             if (mBluetoothAdapter==null){
             System.out.println("블루투스가 사용불가합니다.")
@@ -35,7 +33,7 @@ class bluetooth_worker(appContext: Context, workerParams: WorkerParameters):
             else{
                 active_bluetooth()
                 Device_setname(readtextfile("/data/data/com.example.bluetoothdetector/files/name"))            //원래 이름으로 변경
-                writetextfile("/data/data/com.example.bluetoothdetector/files","Ocrdatafile","")
+                writetextfile("/data/data/com.example.bluetoothdetector/files","Ocrdatafile","-1")
                 Notify()
             }
         }

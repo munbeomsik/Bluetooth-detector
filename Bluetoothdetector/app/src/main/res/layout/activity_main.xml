@@ -41,26 +41,25 @@
         android:layout_marginStart="19dp"
         android:layout_marginTop="13dp"
         android:gravity="center"
-        android:text="@string/자동탐지"
+        android:text="현재 기기명 : "
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/view_auto"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
+    <!--
     <Switch
         android:id="@+id/Auto_Switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="15dp"
         android:showText="false"
         android:switchMinWidth="60dp"
         android:thumbTint="#FFFFFF"
         android:track="@drawable/switch_track_selector"
-        app:layout_constraintEnd_toEndOf="@+id/view_auto"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        tools:ignore="UseSwitchCompatOrMaterialXml"
+        tools:layout_editor_absoluteX="319dp"
+        tools:layout_editor_absoluteY="64dp" />
+    -->
 
     <View
         android:id="@+id/Background_View"
@@ -71,10 +70,11 @@
         android:layout_marginEnd="17dp"
         android:layout_marginBottom="43dp"
         android:background="@drawable/layout_round"
-        app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/Auto_Switch" />
+        app:layout_constraintTop_toTopOf="@+id/view_auto"
+        app:layout_constraintVertical_bias="0.01" />
 
     <TextView
         android:id="@+id/Background_TextView"
@@ -102,7 +102,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/Background_View"
         app:layout_constraintEnd_toEndOf="@+id/Background_View"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
-
+    <!--
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -158,7 +158,7 @@
         </LinearLayout>
 
     </ScrollView>
-
+    -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_OCR"
         android:layout_width="0dp"
