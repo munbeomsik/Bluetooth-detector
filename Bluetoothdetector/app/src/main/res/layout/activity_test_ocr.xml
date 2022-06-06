@@ -67,9 +67,9 @@
 
         android:layout_above="@+id/openGallery_button"
         android:layout_marginBottom="274dp"
-        android:background="#fff"
+        android:background="#FFFFFF"
         android:text="  격리통지서 선택 버튼을 클릭하여 통지서를 첨부 시\n  좌측에 첨부하신 통지서, 우측에 격리기간이 표시됩니다."
-        android:textColor="#169cdf"
+        android:textColor="#0277BD"
         android:textSize="15dp" />
 
 

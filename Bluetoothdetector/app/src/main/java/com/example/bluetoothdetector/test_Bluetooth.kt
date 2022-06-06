@@ -16,9 +16,7 @@ import android.util.Log
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.work.*
 import com.example.bluetoothdetector.databinding.ActivityTestBluetoothBinding
-import com.example.bluetoothdetector.work.bluetooth_worker
 
 class test_Bluetooth : AppCompatActivity() {
     private val REQUEST_ENABLE_BT=1
@@ -159,9 +157,7 @@ class test_Bluetooth : AppCompatActivity() {
                     active_bluetooth()
                     Log.d("bluetoothAdapter","블루투스활성화")
                 }
-
             }
-
         }
     }
 
