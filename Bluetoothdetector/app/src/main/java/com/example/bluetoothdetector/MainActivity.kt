@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +20,10 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.example.bluetoothdetector.databinding.ActivityMainBinding
+import kotlinx.android.synthetic.main.result_dialog.*
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -25,37 +31,65 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = mBinding!!
     private var mBluetoothAdapter: BluetoothAdapter? = null
     private var arrayDevices = ArrayList<BluetoothDevice>()
+    private var loadding: LoadingDialog? = null
+    private var resultdialog: result_dialog? = null
+    private var resultdialog2: result_dialog2? = null
     var result="not complete"
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mBinding= ActivityMainBinding.inflate(layoutInflater)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val blue_WorkRequest: WorkRequest =
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        if (mBluetoothAdapter != null) {
+            mBinding!!.textView2.text = "현재 기기명 : " + Device_getname()
+
+        var found_filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        registerReceiver(receiver, found_filter)
+        found_filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+        registerReceiver(receiver, found_filter)
+        var state_filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        registerReceiver(BlueCheck, state_filter)
+        var name_filter = IntentFilter(BluetoothAdapter.ACTION_LOCAL_NAME_CHANGED)
+        registerReceiver(name_change, name_filter)
+        }
+
+        loadding = LoadingDialog(this)     //로딩창
+        loadding!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        resultdialog = result_dialog(this)     //격리자 탐지 다이얼로그 확인창
+        resultdialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        resultdialog2 = result_dialog2(this)     //격리자 탐지 다이얼로그 확인창
+        resultdialog2!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        //customProgressDialog!!.show()
+        resultdialog!!.dialog_check.setOnClickListener(){  //다이얼로그 확인창 클릭
+            resultdialog!!.dismiss()
+        }
+        resultdialog2!!.dialog_check.setOnClickListener(){  //다이얼로그 확인창 클릭
+            resultdialog2!!.dismiss()
+        }
+        val blue_WorkRequest: WorkRequest =             //워크매니져
             PeriodicWorkRequestBuilder<bluetooth_worker>(15,TimeUnit.MINUTES).build()
         WorkManager.getInstance()?.enqueue(blue_WorkRequest)
         //WorkManager.getInstance()?.cancelAllWork()
-        System.out.println(filesDir.absolutePath)
 
         binding.buttonBt.setOnClickListener(){          //격리자 탐색
 //            val intent = Intent(this, test_Bluetooth::class.java)
 //            startActivity(intent)
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             if (mBluetoothAdapter==null){
                 System.out.println("블루투스가 사용불가합니다.")
 //                onDestroy()
             }
             else{
-                var found_filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-                registerReceiver(receiver, found_filter)
-                found_filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-                registerReceiver(receiver, found_filter)
                 active_bluetooth()                      //블루투스 활성화
 
                 System.out.println("검색전 종료 "+mBluetoothAdapter!!.cancelDiscovery()) //검색전 검색종료
                 arrayDevices.clear()
+                //LoadingDialog().show()
+                loadding!!.show()
                 System.out.println(mBluetoothAdapter!!.startDiscovery())    //검색시작
+
             }
 
         }
@@ -71,12 +105,12 @@ class MainActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             result = data?.getStringExtra("result")!!
             if (result=="complete"){
-                System.out.println("asdasdasd")
 //                var state_filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
 //                registerReceiver(BlueCheck, state_filter)
 //                var name_filter = IntentFilter(BluetoothAdapter.ACTION_LOCAL_NAME_CHANGED)
 //                registerReceiver(name_change, name_filter)
                 search_allow(3600)
+
             }
         }
     }
@@ -101,13 +135,20 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                    var checkp=false
                     for(i in arrayDevices){
                         if(IsCorrect(i.name)){//암호화 양식과 일치하면 1리턴 아니면 0리턴
                             Log.d("test log","격리자가 식별됨")
                             Notify()
+                            //LoadingDialog().dismiss()
+                            loadding?.dismiss()
+                            checkp=true
                             break
                         }
                     }
+                    loadding?.dismiss()
+                    if(checkp) resultdialog?.show()
+                    else    resultdialog2?.show()
                 }
             }
         }
@@ -118,8 +159,10 @@ class MainActivity : AppCompatActivity() {
             val state  = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,-1)
             System.out.println("블루투스변경감지")
             if (state == BluetoothAdapter.STATE_OFF) { // 블루투스 꺼져 있으면 블루투스 활성화
-                active_bluetooth()
-                Log.d("bluetoothAdapter","블루투스활성화")
+                if (IsCorrect(Device_getname())){
+                    active_bluetooth()
+                    Log.d("bluetoothAdapter","블루투스활성화")
+                }
             }
         }
     }
@@ -128,23 +171,29 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
             System.out.print("이름바뀜 : ")
-            val name=Device_getname()
-            if (name=="jaehun"){
-                System.out.println("이름변경시작")
-                val devicename=texttoString("20200305")
+            val reads=readtextfile("/data/data/com.example.bluetoothdetector/files/Ocrdatafile")
+            if (reads!= null && reads!="-1"){
+                val devicename=texttoString(reads)
                 Device_setname(devicename)
+                System.out.println("이름변경시작")
+                if (mBluetoothAdapter!=null){
+                    mBinding!!.textView2.text="현재 기기명 : "+Device_getname()
+                }
             }
+
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(receiver)
+        unregisterReceiver(BlueCheck)
+        unregisterReceiver(name_change)
     }
     @SuppressLint("MissingPermission")
     fun search_allow(time:Int){     //검색허용
         val discoverableIntent: Intent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
-            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0)
+            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, time)
         }
         startActivity(discoverableIntent)
     }
@@ -190,5 +239,19 @@ class MainActivity : AppCompatActivity() {
 
             notificationManager.notify(1,builder.build())
         }
+    }
+    fun readtextfile(fullpath:String) : String{
+        val file= File(fullpath)
+        if(!file.exists()){
+            return ""
+        }
+        val reader = FileReader(file)
+        val buffer = BufferedReader(reader)
+        var temp = ""
+        temp=buffer.readLine()
+        if(temp==null)
+            return ""
+        buffer.close()
+        return temp
     }
 }
