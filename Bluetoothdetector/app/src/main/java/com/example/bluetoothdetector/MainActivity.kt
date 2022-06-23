@@ -13,6 +13,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -26,6 +27,7 @@ import java.io.File
 import java.io.FileReader
 import java.util.concurrent.TimeUnit
 
+
 class MainActivity : AppCompatActivity() {
     private var mBinding: ActivityMainBinding? = null   //뷰바인딩
     private val binding get() = mBinding!!
@@ -34,11 +36,11 @@ class MainActivity : AppCompatActivity() {
     private var loadding: LoadingDialog? = null
     private var resultdialog: result_dialog? = null
     private var resultdialog2: result_dialog2? = null
+    private var checkp = false
     var result="not complete"
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -82,8 +84,8 @@ class MainActivity : AppCompatActivity() {
 //                onDestroy()
             }
             else{
-                active_bluetooth()                      //블루투스 활성화
 
+                active_bluetooth()                      //블루투스 활성화
                 System.out.println("검색전 종료 "+mBluetoothAdapter!!.cancelDiscovery()) //검색전 검색종료
                 arrayDevices.clear()
                 //LoadingDialog().show()
@@ -97,7 +99,21 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, test_Ocr::class.java)
             //startActivity(intent)
             startActivityForResult(intent,100)
+
         }
+        binding.BackgroundSwitch.setOnCheckedChangeListener { compoundButton, b ->  
+            if (b){ //켜졌을때 
+                System.out.println("백그라운드 실행")
+                val SearchIntent = Intent(this,SearchService::class.java)
+                startService(SearchIntent)
+            }
+            else{   //꺼졌을때
+                System.out.println("백그라운드 종료")
+                val SearchIntent = Intent(this,SearchService::class.java)
+                stopService(SearchIntent)
+            }
+        }
+
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {   //격리등록완료
@@ -121,34 +137,40 @@ class MainActivity : AppCompatActivity() {
             System.out.println("현재 상태"+action)
             when(action) {
                 BluetoothDevice.ACTION_FOUND -> {
+                    checkp=false
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    if (device!=null){
-                        if (!arrayDevices.contains(device) && device.name!=null) {
-                            arrayDevices.add(device)
-                        }
-//                        if(IsCorrect(device.name) == 1){ //격리자 식별되면 알리고 검색 종료
-//                            Log.d("test log","격리자가 식별됨")
-//                            Notify()
-//                            mBluetoothAdapter!!.cancelDiscovery()
+                    if (device!=null && !device.name.isNullOrEmpty()){  //디바이스 탐지됨
+//                        if (!arrayDevices.contains(device) && device.name!=null) {
+//                            arrayDevices.add(device)
 //                        }
+                        if(IsCorrect(device.name)){ //격리자 식별되면 알리고 검색 종료
+                            Log.d("test log","격리자가 식별됨")
+                            Notify()
+                            checkp=true
+                            loadding?.dismiss()
+                            resultdialog?.show()
+                            mBluetoothAdapter!!.cancelDiscovery()
+                        }
                     }
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                    var checkp=false
-                    for(i in arrayDevices){
-                        if(IsCorrect(i.name)){//암호화 양식과 일치하면 1리턴 아니면 0리턴
-                            Log.d("test log","격리자가 식별됨")
-                            Notify()
-                            //LoadingDialog().dismiss()
-                            loadding?.dismiss()
-                            checkp=true
-                            break
-                        }
+//                    checkp=false
+//                    for(i in arrayDevices){
+//                        if(IsCorrect(i.name)){//암호화 양식과 일치하면 1리턴 아니면 0리턴
+//                            Log.d("test log","격리자가 식별됨")
+//                            Notify()
+//                            //LoadingDialog().dismiss()
+//                            checkp=true
+//                            break
+//                        }
+//                    }
+                    if(!checkp){
+                        loadding?.dismiss()
+                        System.out.println("checkp : "+checkp)
+                        if(checkp) resultdialog?.show()
+                        else    resultdialog2?.show()
                     }
-                    loadding?.dismiss()
-                    if(checkp) resultdialog?.show()
-                    else    resultdialog2?.show()
                 }
             }
         }
@@ -172,9 +194,9 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             System.out.print("이름바뀜 : ")
             val reads=readtextfile("/data/data/com.example.bluetoothdetector/files/Ocrdatafile")
-            if (reads!= null && reads!="-1"){
-                val devicename=texttoString(reads)
-                Device_setname(devicename)
+            if (reads!= null && reads!=""){ //격리자임 (날짜가 파일이 없거나 비었을때 격리자가 아님)
+                val devicename=texttoString(reads)  //날짜로 격리자명암호화
+                Device_setname(devicename)         //이름 변경
                 System.out.println("이름변경시작")
                 if (mBluetoothAdapter!=null){
                     mBinding!!.textView2.text="현재 기기명 : "+Device_getname()
@@ -236,7 +258,8 @@ class MainActivity : AppCompatActivity() {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("식별됨!")
                 .setContentText("격리자가 근처에서 식별되었습니다.")
-
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(500)
             notificationManager.notify(1,builder.build())
         }
     }
@@ -248,9 +271,12 @@ class MainActivity : AppCompatActivity() {
         val reader = FileReader(file)
         val buffer = BufferedReader(reader)
         var temp = ""
-        temp=buffer.readLine()
-        if(temp==null)
+        if(buffer.readLine().isNullOrEmpty()) {
+            System.out.println("버퍼리더 비었음")
             return ""
+        }
+        else
+            temp=buffer.readLine()
         buffer.close()
         return temp
     }

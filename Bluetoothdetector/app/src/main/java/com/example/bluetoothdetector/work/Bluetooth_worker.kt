@@ -25,19 +25,20 @@ class bluetooth_worker(appContext: Context, workerParams: WorkerParameters):
         val currentdate=SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
         System.out.println("현재시간 "+currentdate)
         val reads=readtextfile("/data/data/com.example.bluetoothdetector/files/Ocrdatafile") //날짜읽기
-        if (reads!="-1" && "20220703".toInt()>=reads.toInt()) {
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            if (mBluetoothAdapter==null){
-            System.out.println("블루투스가 사용불가합니다.")
-            }
-            else{
-                active_bluetooth()
-                Device_setname(readtextfile("/data/data/com.example.bluetoothdetector/files/name"))            //원래 이름으로 변경
-                writetextfile("/data/data/com.example.bluetoothdetector/files","Ocrdatafile","-1")
-                Notify()
+        if (reads!=""){
+            if (currentdate.toInt()>=reads.toInt()) {    //원래이름으로 되돌리기   격리자아님, 날짜지남
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                if (mBluetoothAdapter==null){
+                    System.out.println("블루투스가 사용불가합니다.")
+                }
+                else{
+                    active_bluetooth()
+                    Device_setname(readtextfile("/data/data/com.example.bluetoothdetector/files/name"))            //원래 이름으로 변경
+                    writetextfile("/data/data/com.example.bluetoothdetector/files","Ocrdatafile","")  //날짜 삭제
+                    Notify()
+                }
             }
         }
-
         return Result.success()
     }
 
@@ -77,9 +78,12 @@ class bluetooth_worker(appContext: Context, workerParams: WorkerParameters):
         val reader = FileReader(file)
         val buffer = BufferedReader(reader)
         var temp = ""
-        temp=buffer.readLine()
-        if(temp==null)
+        if(buffer.readLine().isNullOrEmpty()) {
+            System.out.println("버퍼리더 비었음")
             return ""
+        }
+        else
+            temp=buffer.readLine()
         buffer.close()
         return temp
     }

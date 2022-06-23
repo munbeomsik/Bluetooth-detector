@@ -12,6 +12,7 @@
         <activity
             android:name=".test_Bluetooth2"
             android:exported="false" />
+
         <activity
             android:name=".test_Ocr"
             android:exported="false" />
@@ -20,7 +21,7 @@
             android:exported="false" />
         <activity
             android:name=".TestChangeName"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -30,13 +31,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".SearchService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name = "android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
 </manifest>
