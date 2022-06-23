@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private var mBinding: ActivityMainBinding? = null   //뷰바인딩
     private val binding get() = mBinding!!
     private var mBluetoothAdapter: BluetoothAdapter? = null
-    private var arrayDevices = ArrayList<BluetoothDevice>()
+    //private var arrayDevices = ArrayList<BluetoothDevice>()
     private var loadding: LoadingDialog? = null
     private var resultdialog: result_dialog? = null
     private var resultdialog2: result_dialog2? = null
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
                 active_bluetooth()                      //블루투스 활성화
                 System.out.println("검색전 종료 "+mBluetoothAdapter!!.cancelDiscovery()) //검색전 검색종료
-                arrayDevices.clear()
+                //arrayDevices.clear()
                 //LoadingDialog().show()
                 loadding!!.show()
                 System.out.println(mBluetoothAdapter!!.startDiscovery())    //검색시작
@@ -143,9 +143,6 @@ class MainActivity : AppCompatActivity() {
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     if (device!=null && !device.name.isNullOrEmpty()){  //디바이스 탐지됨
-//                        if (!arrayDevices.contains(device) && device.name!=null) {
-//                            arrayDevices.add(device)
-//                        }
                         if(IsCorrect(device.name)){ //격리자 식별되면 알리고 검색 종료
                             Log.d("test log","격리자가 식별됨")
                             Notify()
@@ -157,16 +154,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-//                    checkp=false
-//                    for(i in arrayDevices){
-//                        if(IsCorrect(i.name)){//암호화 양식과 일치하면 1리턴 아니면 0리턴
-//                            Log.d("test log","격리자가 식별됨")
-//                            Notify()
-//                            //LoadingDialog().dismiss()
-//                            checkp=true
-//                            break
-//                        }
-//                    }
                     if(!checkp){
                         loadding?.dismiss()
                         System.out.println("checkp : "+checkp)
