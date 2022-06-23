@@ -11,6 +11,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
@@ -258,8 +260,11 @@ class MainActivity : AppCompatActivity() {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("식별됨!")
                 .setContentText("격리자가 근처에서 식별되었습니다.")
-            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator   //진동
             vibrator.vibrate(500)
+            val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)    //소리
+            val rt = RingtoneManager.getRingtone(applicationContext, notification)
+            rt.play()                                                                               //소리
             notificationManager.notify(1,builder.build())
         }
     }
