@@ -4,13 +4,14 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".test_Ocr">
+    tools:context=".test_Ocr"
+    android:background="#000000">
 
     <RelativeLayout
         android:id="@+id/ImageContainer"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="#ffffff">
+        android:background="#000000">
 
         <ImageView
             android:id="@+id/imageView"
@@ -33,14 +34,15 @@
     <Button
         android:id="@+id/OCRBUtton"
         android:layout_width="180dp"
-        android:layout_height="73dp"
+        android:layout_height="55dp"
         android:layout_alignParentEnd="true"
-
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="33dp"
         android:onClick="processImage"
-        android:text="통지서 격리날짜 추출" />
+        android:text="통지서 격리날짜 추출"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_radius" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -51,14 +53,16 @@
     <Button
         android:id="@+id/openGallery_button"
         android:layout_width="180dp"
-        android:layout_height="73dp"
+        android:layout_height="55dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="33dp"
         android:layout_toStartOf="@+id/OCRBUtton"
-        android:text="격리통지서 선택" />
+        android:background="@drawable/button_radius"
+        android:text="격리통지서 선택"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/OCRTextView"
@@ -67,7 +71,7 @@
 
         android:layout_above="@+id/openGallery_button"
         android:layout_marginBottom="274dp"
-        android:background="#FFFFFF"
+        android:background="#000000"
         android:text="  격리통지서 선택 버튼을 클릭하여 통지서를 첨부 시\n  좌측에 첨부하신 통지서, 우측에 격리기간이 표시됩니다."
         android:textColor="#0277BD"
         android:textSize="15dp" />
